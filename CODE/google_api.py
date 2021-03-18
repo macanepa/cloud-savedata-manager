@@ -13,6 +13,7 @@ from google.oauth2.credentials import Credentials
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
+
 def get_service():
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
@@ -38,6 +39,7 @@ def get_service():
     service = build('drive', 'v3', credentials=creds)
     return service
 
+
 def create_folder(service, folder_name, parent_id=None):
     file_metadata = {
         'name': folder_name,
@@ -50,10 +52,10 @@ def create_folder(service, folder_name, parent_id=None):
                                   fields='id').execute()
     return file.get('id')
 
-def list_folders(service, q="mimeType = 'application/vnd.google-apps.folder'", get_root: bool=False):
+
+def list_folders(service, q="mimeType = 'application/vnd.google-apps.folder'", get_root: bool = False):
     # Call the Drive v3 API
-    results = service.files().list(q=q,
-        pageSize=10, fields="nextPageToken, files(id, name)").execute()
+    results = service.files().list(q=q, pageSize=10, fields="nextPageToken, files(id, name)").execute()
     items = results.get('files', [])
 
     folder_id = None
@@ -87,12 +89,12 @@ def return_id(service, find: str, q="mimeType = 'application/vnd.google-apps.fol
 
 def download_file(service, file_id: str, output_path: str):
     request = service.files().get_media(fileId=file_id)
-    fh = io.BytesIO()
     fh = open(output_path, 'wb')
     downloader = MediaIoBaseDownload(fh, request)
     done = False
     while done is False:
         status, done = downloader.next_chunk()
+
 
 def upload_file(service, file_path: str, parent_id: str = None):
     file_metadata = {'name': os.path.basename(file_path)}
@@ -100,10 +102,11 @@ def upload_file(service, file_path: str, parent_id: str = None):
         file_metadata['parents'] = [parent_id]
     media = MediaFileUpload(file_path, mimetype='zipfile/zip')
     file = service.files().create(body=file_metadata,
-                                        media_body=media,
-                                        fields='id').execute()
+                                  media_body=media,
+                                  fields='id').execute()
     file_id = file.get('id')
     return file_id
+
 
 def update_file(service, file_path: str, file_id: str):
     file_metadata = {'name': os.path.basename(file_path)}
@@ -114,14 +117,6 @@ def update_file(service, file_path: str, file_id: str):
                                   fields='id').execute()
     return file.get('id')
 
+
 if __name__ == '__main__':
-    service = get_service()
-    #download_file(service=service,
-    #              file_id='1LXIdgCPd5-bTHc5Tzv2JqUwae7DXvk_w',
-    #              output_path='output.pdf')
-
-    #upload_file(service=service,
-    #            file_path='testing_file.txt')
-
-    list_folders(service)
-
+    list_folders(get_service())

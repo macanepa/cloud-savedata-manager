@@ -20,9 +20,6 @@ mc_menu = mc.Menu(title='Cloud SaveData Manager',
                   back=False)
 
 
-
 while True:
     utilities.initialize()
     mc_menu.show()
-
-#  C:\Users\matias\Documents\My Games\NieR_Automata

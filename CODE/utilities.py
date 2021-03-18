@@ -9,7 +9,6 @@ SETTINGS_PATH = 'settings.config'
 
 
 def zipdir(path, ziph):
-    # ziph is zipfile handle
     for root, dirs, files in os.walk(path):
         for file in files:
             ziph.write(os.path.join(root, file),
@@ -17,16 +16,18 @@ def zipdir(path, ziph):
                                        os.path.join(path, '..')))
 
 
-def unzipdir(file_path: str, output_path: str=None):
+def unzipdir(file_path: str, output_path: str = None):
     with zipfile.ZipFile(file_path, 'r') as zipObj:
         if output_path:
             zipObj.extractall(output_path)
         else:
             zipObj.extractall()
 
+
 def create_config():
     mc.generate_json(SETTINGS_PATH, {})
     logging.info('New settings.config file generated')
+
 
 def download_config():
     logging.info('Downloading Config Files')
@@ -44,11 +45,13 @@ def download_config():
         logging.warning('No settings.config file found')
         create_config()
 
+
 def upload_settings():
     service = ga.get_service()
     ga.upload_file(service=service,
                    file_path='settings.config',
                    parent_id=ga.list_folders(service))
+
 
 def create_game_data(data):
     if 'id' in list(data.keys()):
@@ -63,15 +66,14 @@ def create_game_data(data):
         config = mc.get_dict_from_json(SETTINGS_PATH)
 
     if data['name'] in config.keys():
-        mc_overwrite = mc.Menu(title=f'{data["name"]} already exists. Overwrite SaveData?', options=['Yes', 'No'], back=False)
+        mc_overwrite = mc.Menu(title=f'{data["name"]} already exists. Overwrite SaveData?',
+                               options=['Yes', 'No'], back=False)
         mc_overwrite.show()
         if mc_overwrite.returned_value == '2':
             return
         else:
             file_id = config[data['name']]['id']
 
-
-    username = os.path.basename(os.path.expanduser('~'))
     user_profile = os.path.expanduser('~')
     path = data['path']
     if path.startswith(user_profile):
@@ -99,7 +101,6 @@ def create_game_data(data):
                                      parent_id=ga.list_folders(service=service, get_root=True))
         file_id = ga.upload_file(service, zip_filename, folder_id)
 
-
     data_config = {
         'name': data['name'],
         'path': path,
@@ -108,7 +109,6 @@ def create_game_data(data):
 
     config[data['name']] = data_config
     mc.generate_json(SETTINGS_PATH, config)
-    # TODO: upload updated settings.config
 
     settings_file_id = ga.return_id(service=service,
                                     find='settings.config')
@@ -126,7 +126,6 @@ def create_game_data(data):
             ga.upload_file(service=service,
                            file_path=SETTINGS_PATH,
                            parent_id=ga.list_folders(service=service, get_root=True))
-
 
 
 def initialize():
@@ -152,7 +151,6 @@ def update_game():
     if index == 0:
         return
     data = config[options[index - 1]]
-    #create_game_data(data)
     pprint(data)
     create_game_data(data)
 
@@ -196,15 +194,14 @@ def restore_game():
 
 def change_sync_account():
     mc_remove_sync_confirmation = mc.Menu(title='Are you sure you want to change sync account?\n'
-                                                'You will have to login again with a Google Account', options=['Yes', 'No'])
+                                                'You will have to login again with a Google Account',
+                                          options=['Yes', 'No'])
     mc_remove_sync_confirmation.show()
     if mc_remove_sync_confirmation.returned_value == '1':
         os.remove('token.json')
         os.remove('settings.config')
     ga.get_service()
 
+
 if __name__ == '__main__':
     download_config()
-
-
-
