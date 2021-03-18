@@ -48,10 +48,9 @@ def create_folder(service, folder_name, parent_id=None):
 
     file = service.files().create(body=file_metadata,
                                   fields='id').execute()
-    print('Folder ID: %s' % file.get('id'))
     return file.get('id')
 
-def list_folders(service, q="mimeType = 'application/vnd.google-apps.folder'"):
+def list_folders(service, q="mimeType = 'application/vnd.google-apps.folder'", get_root: bool=False):
     # Call the Drive v3 API
     results = service.files().list(q=q,
         pageSize=10, fields="nextPageToken, files(id, name)").execute()
@@ -73,14 +72,20 @@ def list_folders(service, q="mimeType = 'application/vnd.google-apps.folder'"):
     results = service.files().list(q=f"'{folder_id}' in parents",
                                    pageSize=10, fields="nextPageToken, files(id, name)").execute()
     items = results.get('files', [])
-    for item in items:
-        print(item['name'], item['id'])
+    if get_root:
+        return folder_id
+    return items
 
-    return folder_id
+
+def return_id(service, find: str, q="mimeType = 'application/vnd.google-apps.folder'"):
+    items = list_folders(service=service, q=q)
+    for item in items:
+        if find:
+            if item['name'] == find:
+                return item['id']
 
 
 def download_file(service, file_id: str, output_path: str):
-    print('downloading file...')
     request = service.files().get_media(fileId=file_id)
     fh = io.BytesIO()
     fh = open(output_path, 'wb')
@@ -88,7 +93,6 @@ def download_file(service, file_id: str, output_path: str):
     done = False
     while done is False:
         status, done = downloader.next_chunk()
-        print("Download %d%%." % int(status.progress() * 100))
 
 def upload_file(service, file_path: str, parent_id: str = None):
     file_metadata = {'name': os.path.basename(file_path)}
@@ -98,7 +102,17 @@ def upload_file(service, file_path: str, parent_id: str = None):
     file = service.files().create(body=file_metadata,
                                         media_body=media,
                                         fields='id').execute()
-    print('File ID: %s' % file.get('id'))
+    file_id = file.get('id')
+    return file_id
+
+def update_file(service, file_path: str, file_id: str):
+    file_metadata = {'name': os.path.basename(file_path)}
+    media = MediaFileUpload(file_path, mimetype='zipfile/zip')
+    file = service.files().update(fileId=file_id,
+                                  body=file_metadata,
+                                  media_body=media,
+                                  fields='id').execute()
+    return file.get('id')
 
 if __name__ == '__main__':
     service = get_service()
