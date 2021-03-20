@@ -128,7 +128,13 @@ def create_game_data(data):
                            parent_id=ga.list_folders(service=service, get_root=True))
 
 
+def check_credentials():
+    if not os.path.exists('credentials/credentials.json'):
+        logging.warning('no credentials.json found')
+
+
 def initialize():
+    check_credentials()
     download_config()
 
 
@@ -201,6 +207,15 @@ def change_sync_account():
         os.remove('token.json')
         os.remove('settings.config')
     ga.get_service()
+
+
+def display_app_info():
+    about = mc.About(
+        authors=['Matías Cánepa'],
+        github_repo='https://github.com/macanepa/cloud-savedata-manager'
+    )
+
+    about.print_credits()
 
 
 if __name__ == '__main__':
