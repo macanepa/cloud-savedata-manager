@@ -8,13 +8,15 @@ from googleapiclient.http import MediaFileUpload
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+import httplib2
+from pprint import pprint
 
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
-def get_service():
+def get_service(service_name: str ='drive'):
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
     """
@@ -36,7 +38,7 @@ def get_service():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
-    service = build('drive', 'v3', credentials=creds)
+    service = build(service_name, 'v3', credentials=creds)
     return service
 
 
@@ -118,5 +120,14 @@ def update_file(service, file_path: str, file_id: str):
     return file.get('id')
 
 
+def get_user_info():
+    service = get_service()
+    file_data = service.files().get(fileId=list_folders(service=service, get_root=True),
+                                  fields='*').execute()
+    email_address = file_data['owners'][0]['emailAddress']
+    return email_address
+
+
 if __name__ == '__main__':
-    list_folders(get_service())
+    #list_folders(get_service())
+    print(get_user_info())

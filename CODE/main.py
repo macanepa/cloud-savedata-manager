@@ -1,5 +1,6 @@
 import mcutils as mc
 import utilities
+import google_api as ga
 
 mc.activate_mc_logger(console_log_level='info')
 mc.ColorSettings.is_dev = True
@@ -15,7 +16,8 @@ mc_add_game = mc.Menu(title='Backup SaveData to Cloud', options=[mf_add_new_game
 
 mc_options = mc.Menu(title='Settings', options=[mf_change_sync_account])
 
-mc_menu = mc.Menu(title='Cloud SaveData Manager',
+mc_menu = mc.Menu(title='Cloud SaveData Manager\t'
+                        f'({mc.Color.GREEN}{ga.get_user_info()}{mc.Color.RESET})',
                   options=[mf_download_data, mc_add_game, mc_options, mf_exit],
                   back=False)
 
