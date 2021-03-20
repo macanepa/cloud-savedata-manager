@@ -2,9 +2,8 @@ import mcutils as mc
 import utilities
 import google_api as ga
 
-mc.activate_mc_logger(console_log_level='info')
-mc.ColorSettings.is_dev = True
-mc.ColorSettings.print_color = True
+mc.activate_mc_logger('info')
+utilities.initialize()
 
 mf_exit = mc.MenuFunction(title='Exit', function=mc.exit_application)
 mf_add_new_game = mc.MenuFunction(title='Add New Title', function=utilities.add_game)
@@ -25,5 +24,5 @@ mc_menu = mc.Menu(title='Cloud SaveData Manager\t'
 
 
 while True:
-    utilities.initialize()
     mc_menu.show()
+    utilities.initialize()

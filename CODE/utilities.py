@@ -3,9 +3,14 @@ import os
 import mcutils as mc
 import zipfile
 import logging
+import subprocess
+import webbrowser
 from pprint import pprint
 
-SETTINGS_PATH = 'settings.config'
+
+SETTINGS_PATH = 'credentials/settings.config'
+TOKEN_PATH = 'credentials/token.json'
+CREDENTIALS_PATH = 'credentials/credentials.json'
 
 
 def zipdir(path, ziph):
@@ -49,7 +54,7 @@ def download_config():
 def upload_settings():
     service = ga.get_service()
     ga.upload_file(service=service,
-                   file_path='settings.config',
+                   file_path=SETTINGS_PATH,
                    parent_id=ga.list_folders(service))
 
 
@@ -129,8 +134,24 @@ def create_game_data(data):
 
 
 def check_credentials():
-    if not os.path.exists('credentials/credentials.json'):
+    credentials_directory = os.path.join(os.getcwd(), "credentials")
+    link = 'https://developers.google.com/drive/api/v3/quickstart/python'
+    if not os.path.exists('credentials'):
+        os.mkdir('credentials')
+    if not os.path.exists(CREDENTIALS_PATH):
+        webbrowser.open(link, new=2)
+        subprocess.call(f"explorer {credentials_directory}", shell=True)
+    while not os.path.exists(CREDENTIALS_PATH):
         logging.warning('no credentials.json found')
+        mc.mcprint(f"""
+        1. Head to {link} and click on "Enable the Drive API"
+        2. Enter a name for the project, e.g "Cloud SaveData Manager"
+        3. Select "Yes" and "Next"
+        4. Select "Desktop app" and Create
+        5. Click "Download Client Configuration"
+        6. Place the "credentials.json" inside the "credentials" folder\n""")
+        input('Enter to continue...')
+        mc.clear(10)
 
 
 def initialize():
@@ -201,11 +222,12 @@ def restore_game():
 def change_sync_account():
     mc_remove_sync_confirmation = mc.Menu(title='Are you sure you want to change sync account?\n'
                                                 'You will have to login again with a Google Account',
-                                          options=['Yes', 'No'])
+                                          options=['Yes', 'No'],
+                                          back=False)
     mc_remove_sync_confirmation.show()
     if mc_remove_sync_confirmation.returned_value == '1':
-        os.remove('token.json')
-        os.remove('settings.config')
+        os.remove(TOKEN_PATH)
+        os.remove(SETTINGS_PATH)
     ga.get_service()
 
 
