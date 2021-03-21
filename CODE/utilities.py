@@ -58,6 +58,27 @@ def upload_settings():
                    parent_id=ga.list_folders(service))
 
 
+def update_config_file(service, config: dict):
+    mc.generate_json(SETTINGS_PATH, config)
+
+    settings_file_id = ga.return_id(service=service,
+                                    find='settings.config')
+    if settings_file_id:
+        logging.info('updating settings.config in cloud')
+        ga.update_file(service=service,
+                       file_path=SETTINGS_PATH,
+                       file_id=settings_file_id)
+    else:
+        logging.warning('no settings.config found in cloud')
+        mc_upload_settings = mc.Menu(title=f'Upload local settings.config to cloud?', options=['Yes', 'No'], back=False)
+        mc_upload_settings.show()
+        if mc_upload_settings.returned_value == '1':
+            logging.info('uploading local settings.config to cloud')
+            ga.upload_file(service=service,
+                           file_path=SETTINGS_PATH,
+                           parent_id=ga.list_folders(service=service, get_root=True))
+
+
 def create_game_data(data):
     if 'id' in list(data.keys()):
         file_id = data['id']
@@ -113,24 +134,7 @@ def create_game_data(data):
     }
 
     config[data['name']] = data_config
-    mc.generate_json(SETTINGS_PATH, config)
-
-    settings_file_id = ga.return_id(service=service,
-                                    find='settings.config')
-    if settings_file_id:
-        logging.info('updating settings.config in cloud')
-        ga.update_file(service=service,
-                       file_path=SETTINGS_PATH,
-                       file_id=settings_file_id)
-    else:
-        logging.warning('no settings.config found in cloud')
-        mc_upload_settings = mc.Menu(title=f'Upload local settings.config to cloud?', options=['Yes', 'No'], back=False)
-        mc_upload_settings.show()
-        if mc_upload_settings.returned_value == '1':
-            logging.info('uploading local settings.config to cloud')
-            ga.upload_file(service=service,
-                           file_path=SETTINGS_PATH,
-                           parent_id=ga.list_folders(service=service, get_root=True))
+    update_config_file(service, config)
 
 
 def check_credentials():
@@ -219,6 +223,42 @@ def restore_game():
         os.remove(output_path)
 
 
+def delete_cloud_savedata():
+    config = mc.get_dict_from_json(SETTINGS_PATH)
+    options = list(config.keys())
+    if len(options) == 0:
+        logging.warning('No title SaveData found')
+        return
+    mc_selected_game = mc.Menu(title='Select a Title', options=options)
+    mc_selected_game.show()
+    index = int(mc_selected_game.returned_value)
+    if index == 0:
+        return
+    data = config[options[index - 1]]
+    pprint(data)
+    directory = data['path']
+    print(directory)
+    if directory.startswith('HOME'):
+        directory = directory.replace('HOME', os.path.expanduser('~'))
+    output_path = directory + '.zip'
+    print(output_path)
+
+    mc_confirmation = mc.Menu(title=f'Are you sure you want to delete the Cloud SaveData of {data["name"]}?\n'
+                                    f'{mc.Color.RED}SaveData will be moved to trash on Google Drive{mc.Color.RESET}',
+                              options=[f'{mc.Color.RED}Yes{mc.Color.RESET}', 'No'], back=False)
+    mc_confirmation.show()
+    if mc_confirmation.returned_value == '1':
+        service = ga.get_service(version='v3')
+        folder_id = service.files().get(fileId=data['id'], fields='*').execute()['parents'][0]
+        ga.trash_file(service=service,
+                      file_id=folder_id)
+        config.pop(options[index - 1], None)
+        update_config_file(service=service,
+                           config=config)
+        logging.info(f'Game - {data["name"]} (id: {data["id"]} moved to trash)')
+        mc.mcprint(text='Cloud SaveData deleted successfully', color=mc.Color.RED)
+
+
 def change_sync_account():
     mc_remove_sync_confirmation = mc.Menu(title='Are you sure you want to change sync account?\n'
                                                 'You will have to login again with a Google Account',
@@ -236,9 +276,12 @@ def display_app_info():
         authors=['Matías Cánepa'],
         github_repo='https://github.com/macanepa/cloud-savedata-manager'
     )
-
     about.print_credits()
 
 
+def check_update():
+    webbrowser.open('https://github.com/macanepa/cloud-savedata-manager/releases')
+
+
 if __name__ == '__main__':
-    download_config()
+    delete_cloud_savedata()

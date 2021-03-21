@@ -62,3 +62,13 @@ you may do so by following these steps:
 4. Log-in with the new Google Account
 
 On the main menu, your new Google Account will be displayed on green.
+
+### Check for updates
+You can check if there are new available update heading to the
+[releases page](https://github.com/macanepa/cloud-savedata-manager) of the project.
+Alternatively, you may do so by following these steps:
+
+1. Select **Settings**
+2. Select **Check for updates**
+
+This will open the latest releases of the project.

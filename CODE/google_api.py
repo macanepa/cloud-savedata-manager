@@ -13,7 +13,7 @@ import utilities
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
-def get_service(service_name: str ='drive'):
+def get_service(service_name: str ='drive', version: str='v3'):
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
     """
@@ -35,7 +35,7 @@ def get_service(service_name: str ='drive'):
         with open(utilities.TOKEN_PATH, 'w') as token:
             token.write(creds.to_json())
 
-    service = build('drive', 'v3', credentials=creds)
+    service = build(service_name, version, credentials=creds)
     return service
 
 
@@ -78,8 +78,10 @@ def list_folders(service, q="mimeType = 'application/vnd.google-apps.folder'", g
     return items
 
 
-def return_id(service, find: str, q="mimeType = 'application/vnd.google-apps.folder'"):
+def return_id(service, find: str=None, q="mimeType = 'application/vnd.google-apps.folder'"):
     items = list_folders(service=service, q=q)
+    if not find:
+        return items
     for item in items:
         if find:
             if item['name'] == find:
@@ -117,6 +119,12 @@ def update_file(service, file_path: str, file_id: str):
     return file.get('id')
 
 
+def trash_file(service, file_id):
+    body = {'trashed': True}
+    file = service.files().update(fileId=file_id, body=body).execute()
+    return file.get('id')
+
+
 def get_user_info():
     service = get_service()
     file_data = service.files().get(fileId=list_folders(service=service, get_root=True),
@@ -126,5 +134,4 @@ def get_user_info():
 
 
 if __name__ == '__main__':
-    #list_folders(get_service())
     print(get_user_info())
