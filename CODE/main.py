@@ -16,7 +16,6 @@ mc_add_game = mc.Menu(title='Backup SaveData to Cloud', options=[mf_add_new_game
 
 mc_options = mc.Menu(title='Settings', options=[mf_change_sync_account, mf_about])
 
-
 mc_menu = mc.Menu(title='Cloud SaveData Manager\t'
                         f'({mc.Color.GREEN}{ga.get_user_info()}{mc.Color.RESET})',
                   options=[mf_download_data, mc_add_game, mc_options, mf_exit],

@@ -216,7 +216,7 @@ def restore_game():
         unzipdir(file_path=output_path,
                  output_path=os.path.dirname(output_path))
 
-    os.remove(output_path)
+        os.remove(output_path)
 
 
 def change_sync_account():
