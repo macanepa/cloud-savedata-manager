@@ -58,7 +58,7 @@ def upload_settings():
                    parent_id=ga.list_folders(service))
 
 
-def create_game_data(data):
+def create_game_data(data, menu=True):
     if 'id' in list(data.keys()):
         file_id = data['id']
     else:
@@ -71,13 +71,17 @@ def create_game_data(data):
         config = mc.get_dict_from_json(SETTINGS_PATH)
 
     if data['name'] in config.keys():
-        mc_overwrite = mc.Menu(title=f'{data["name"]} already exists. Overwrite SaveData?',
-                               options=['Yes', 'No'], back=False)
-        mc_overwrite.show()
-        if mc_overwrite.returned_value == '2':
-            return
+        if menu:
+            mc_overwrite = mc.Menu(title=f'{data["name"]} already exists. Overwrite SaveData?',
+                                   options=['Yes', 'No'], back=False)
+            mc_overwrite.show()
+            if mc_overwrite.returned_value == '2':
+                return
+            else:
+                file_id = config[data['name']]['id']
         else:
             file_id = config[data['name']]['id']
+
 
     user_profile = os.path.expanduser('~')
     path = data['path']
@@ -126,7 +130,7 @@ def create_game_data(data):
         logging.warning('no settings.config found in cloud')
         mc_upload_settings = mc.Menu(title=f'Upload local settings.config to cloud?', options=['Yes', 'No'], back=False)
         mc_upload_settings.show()
-        if mc_upload_settings.returned_value == '1':
+        if mc_upload_settings.returned_value == '1' or not menu:
             logging.info('uploading local settings.config to cloud')
             ga.upload_file(service=service,
                            file_path=SETTINGS_PATH,
@@ -166,34 +170,40 @@ def add_game():
     create_game_data(data)
 
 
-def update_game():
+def update_game(game_id: str=None, menu: bool=True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
     options = list(config.keys())
     if len(options) == 0:
         logging.warning('No title SaveData found')
         return
-    mc_add_game = mc.Menu(title='Select a Title', options=options)
-    mc_add_game.show()
-    index = int(mc_add_game.returned_value)
-    if index == 0:
-        return
-    data = config[options[index - 1]]
+    if menu:
+        mc_add_game = mc.Menu(title='Select a Title', options=options)
+        mc_add_game.show()
+        index = int(mc_add_game.returned_value)
+        if index == 0:
+            return
+        data = config[options[index - 1]]
+    else:
+        data = config[game_id]
     pprint(data)
-    create_game_data(data)
+    create_game_data(data, menu=menu)
 
 
-def restore_game():
+def restore_game(game_id: str=None, menu: bool=True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
-    options = list(config.keys())
-    if len(options) == 0:
-        logging.warning('No title SaveData found')
-        return
-    mc_add_game = mc.Menu(title='Select a Title', options=options)
-    mc_add_game.show()
-    index = int(mc_add_game.returned_value)
-    if index == 0:
-        return
-    data = config[options[index - 1]]
+    if menu:
+        options = list(config.keys())
+        if len(options) == 0:
+            logging.warning('No title SaveData found')
+            return
+        mc_add_game = mc.Menu(title='Select a Title', options=options)
+        mc_add_game.show()
+        index = int(mc_add_game.returned_value)
+        if index == 0:
+            return
+        data = config[options[index - 1]]
+    else:
+        data = config[game_id]
     pprint(data)
     directory = data['path']
     print(directory)
@@ -205,9 +215,11 @@ def restore_game():
     mc_confirmation = mc.Menu(title=f'Cloud SaveData will overwrite local data at {output_path}\n'
                                     f'Continue?',
                               options=['Yes', 'No'], back=False)
-    mc_confirmation.show()
-    if mc_confirmation.returned_value == '1':
-        os.makedirs(os.path.dirname(output_path))
+    if menu:
+        mc_confirmation.show()
+    if not menu or mc_confirmation.returned_value == '1':
+        if not os.path.exists(os.path.dirname(output_path)):
+            os.makedirs(os.path.dirname(output_path))
         service = ga.get_service()
         ga.download_file(service=service,
                          file_id=data['id'],

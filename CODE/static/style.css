@@ -1,0 +1,102 @@
+.title{
+    color: tomato;
+}
+
+body{
+    color: white;
+    background-color: rgb(47, 48, 48);
+    background-image: -webkit-linear-gradient(30deg, rgb(47, 48, 48) 50%, rgb(27, 27, 27) 50%);
+    height: 100vh;
+    backdrop-filter: blur(10px);
+}
+
+.login{
+    color: rgb(75, 224, 15);
+}
+
+hr { background-color: rgb(175, 175, 175); height: 1px; border: 0; }
+
+.list-group{
+    max-height: 30vh;
+    margin-bottom: 10px;
+    overflow-y:scroll;
+    width: 100%;
+}
+
+
+.list-group-item{
+    padding-top: 0;
+    padding-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-color: rgb(41, 41, 41);
+}
+
+
+.form-control {
+    border: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+
+
+
+  #wave {
+    position: relative;
+    height: 70px;
+    width: 600px;
+    background: #e0efe3;
+  }
+  #wave:before {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 100% 50%;
+    width: 340px;
+    height: 80px;
+    background-color: white;
+    right: -5px;
+    top: 40px;
+  }
+  #wave:after {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 100% 50%;
+    width: 300px;
+    height: 70px;
+    background-color: #e0efe3;
+    left: 0;
+    top: 27px;
+  }
+
+
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-align: center;
+  }
