@@ -1,5 +1,5 @@
 $(function(){
-	$('li').click(function(){
+	$('.game-li').click(function(){
 		var gameName = $(this).text();
 		console.log('wiweño')
 		console.log(gameName)

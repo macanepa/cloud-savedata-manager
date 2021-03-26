@@ -7,7 +7,7 @@ import google_api as ga
 from pprint import pprint
 
 app = Flask(__name__)
-ui = FlaskUI(app)                 # feed the parameters
+ui = FlaskUI(app, width=850, height=440)
 
 
 mc.activate_mc_logger('info')
@@ -65,6 +65,21 @@ def download_cloud():
         else:
             return {'nice': False}
     return {'nice': None}
+
+
+@app.route('/addGame', methods=['POST'])
+def add_game():
+    print("WIWIEII")
+    if request.method == 'POST':
+        print("walala")
+        pprint(request.form)
+        data = request.form
+        game_name = data.get('game')
+        path = data.get('path')
+        data = {'name': game_name,
+                'path': path}
+        utilities.create_game_data(data=data, menu=False)
+    return {'nice': True}
 
 
 ui.run()

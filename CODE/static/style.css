@@ -5,7 +5,8 @@
 body{
     color: white;
     background-color: rgb(47, 48, 48);
-    background-image: -webkit-linear-gradient(30deg, rgb(47, 48, 48) 50%, rgb(27, 27, 27) 50%);
+    background-image: -webkit-linear-gradient(30deg, rgb(48, 48, 48) 50%, rgb(91, 117, 80) 50%);
+    background-image: -webkit-linear-gradient(30deg, rgb(48, 48, 48) 50%, rgb(90, 107, 83) 50%);
     height: 100vh;
     backdrop-filter: blur(10px);
 }
@@ -36,6 +37,7 @@ hr { background-color: rgb(175, 175, 175); height: 1px; border: 0; }
 
 .form-control {
     border: 0;
+
 }
 
 /* width */
@@ -100,3 +102,7 @@ hr { background-color: rgb(175, 175, 175); height: 1px; border: 0; }
     color: white;
     text-align: center;
   }
+
+  .form-control::-webkit-input-placeholder {
+  color: #6caf62;
+}
