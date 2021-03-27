@@ -1,23 +1,24 @@
 import mcutils as mc
 from flask import Flask
 from flaskwebgui import FlaskUI   # get the FlaskUI class
-from flask import render_template, request
+from flask import render_template, request, redirect
 import utilities
 import google_api as ga
 from pprint import pprint
 
 app = Flask(__name__)
-ui = FlaskUI(app, width=850, height=440)
+ui = FlaskUI(app, width=1040, height=550)
 
 
 mc.activate_mc_logger('info')
 utilities.initialize()
 
-config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
-game_list = list(config.keys())
 
 @app.route("/")
 def index():
+    config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
+    game_list = list(config.keys())
+    print("?MAIN")
     return render_template('index.html',
                            email=ga.get_user_info(),
                            games=game_list,
@@ -27,9 +28,13 @@ def index():
 def games():
     if request.method == 'GET':
         game_name = request.args.get('gameName')
+        config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
         if game_name in list(config.keys()):
             return_dict = config[game_name]
             return_dict['game_name'] = game_name
+            is_local = utilities.check_local(utilities.decrypt_path(return_dict['path']))
+            return_dict['path'] = utilities.decrypt_path(return_dict['path'])
+            return_dict['is_local'] = is_local
             return return_dict
         else:
             return {'nice': False}
@@ -40,6 +45,7 @@ def games():
 def upload_cloud():
     print('wiwi')
     if request.method == 'GET':
+        config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
         print(request.args)
         game_name = request.args.get('gameName')
         print(game_name)
@@ -55,13 +61,15 @@ def upload_cloud():
 @app.route('/download_cloud', methods=['GET'])
 def download_cloud():
     if request.method == 'GET':
+        config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
         print(request.args)
         game_name = request.args.get('gameName')
         print(game_name)
         if game_name in list(config.keys()):
             utilities.restore_game(game_id=game_name,
                                    menu=False)
-            return {'response': 'Ok'}
+            return redirect('')  # refresh
+            #return {'response': 'Ok'}
         else:
             return {'nice': False}
     return {'nice': None}
@@ -80,6 +88,23 @@ def add_game():
                 'path': path}
         utilities.create_game_data(data=data, menu=False)
     return {'nice': True}
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    if request.method == 'GET':
+        utilities.change_sync_account(menu=False)
+        return redirect('/')
+    return {'nice': False}
+
+
+@app.route('/delete_cloud', methods=['GET'])
+def delete_cloud():
+    if request.method == 'GET':
+        utilities.delete_cloud_savedata(game_name=request.args.get('gameName'),
+                                        menu=False)
+        return redirect('/')
+    return {'nice': False}
 
 
 ui.run()

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/style.css">
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -20,16 +20,21 @@
     <script src="../static/js/getGameData.js"></script>
     <script src="../static/js/backupManager.js"></script>
     <script src="../static/js/addGame.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
     <div class="container-fluid px-5 pt-4">
         <div class="row">
-            <div class="col-8 p-2">
-                <h3 style="color: rgb(207, 207, 207);">Cloud SaveData Manager <span style="color: chartreuse;">alpha</span></h3>
+            <div class="col-5 p-2">
+                <h3 style="color: rgb(207, 207, 207);">Cloud SaveData Manager <span
+                        style="color: chartreuse;">alpha</span></h3>
             </div>
-            <div class="col p-2">
-                <a href='#' class="float-right pl-2">Config</a>
+            <div class="col-4">
+                <div id='id-alerta' class="alert alert-success show fade m-0" role='alert'>---</div>
+            </div>
+            <div class="col-3 p-2">
+                <a href='/logout' class="float-right pl-2">Logout</a>
                 <p class="float-right login">{{email}}</p>
             </div>
         </div>
@@ -40,13 +45,12 @@
                         <div class="container p-3 my-3 bg-dark text-white rounded-lg shadow">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <input type="text" class="form-control form-control bg-dark text-white"
-                                        placeholder="Search Savedata">
+                                    <h5>Games available on Cloud</h5>
                                 </div>
                                 <div class="row pt-3">
                                     <ul class="list-group">
                                         {%for i in range(0, len)%}
-                                            <li id="li-{{i}}" class="list-group-item bg-dark game-li">{{games[i]}}</li>
+                                        <li id="li-{{i}}" value="{{games[i]}}" class="list-group-item bg-dark game-li">{{games[i]}}</li>
                                         {%endfor%}
                                     </ul>
                                 </div>
@@ -68,13 +72,21 @@
                                     <ul>
                                         <li id="game-title">Title:</li>
                                         <li id="path">Location:</li>
+                                        <li id="game-size">Size:</li>
+                                        <li id="game-timestamp">Timestamp:</li>
                                         <li id="gameId">id:</li>
                                     </ul>
                                 </div>
                                 <div class="row">
                                     <div class="btn-group">
-                                        <button id="download-cloud-btn" type="button" class="btn btn-success">Restore from Cloud</button>
-                                        <button id="upload-cloud-btn" type="button" class="btn btn-primary">Backup to Cloud</button>
+                                        <button id="download-cloud-btn" disabled type="button"
+                                            class="btn btn-success">Restore
+                                            from Cloud</button>
+                                        <button id="upload-cloud-btn" disabled type="button"
+                                            class="btn btn-primary">Backup to
+                                            Cloud</button>
+                                        <button id="delete-cloud-btn" disabled type="button"
+                                            class="btn btn-danger">Delete Cloud Savedata</button>
                                     </div>
                                 </div>
                             </div>
@@ -84,10 +96,16 @@
             </div>
         </div>
         <hr>
+        <footer>
+            <div class="d-flex justify-content-center">
+                <div>Developed by Matías Cánepa</div>
+                <div>
+                    <i class="fa fa-github ml-3 mr-1" aria-hidden="true"></i>
+                    <a href="https://github.com/macanepa">GitHub</a>
+                </div>
+            </div>
+        </footer>
     </div>
-    <section>
-        <div class="wave"></div>
-    </section>
 
     <!-- The Modal -->
     <div class="modal" id="myModal">
@@ -105,13 +123,14 @@
                     <form id="new-game-form" method="post">
                         <div class="form-row">
                             <div class="col">
-                                <input id="game-name-field" type="text" class="form-control bg-dark text-white" placeholder="Videogame name"
-                                    name="game">
+                                <input id="game-name-field" type="text" class="form-control bg-dark text-white"
+                                    placeholder="Videogame name" name="game">
                             </div>
                         </div>
                         <div class="form-row mt-2">
                             <div class='col'>
-                                <input id="'path-field" type="text" class="form-control bg-dark text-white" placeholder="Savedata Directory Path" name="path">
+                                <input id="'path-field" type="text" class="form-control bg-dark text-white"
+                                    placeholder="Savedata Directory Path" name="path">
                             </div>
                         </div>
                         <div class="form-row mt-2">

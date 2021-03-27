@@ -1,3 +1,7 @@
+function refreshPage(){
+		    window.location.reload();
+		}
+
 $(function(){
 	$("#new-game-form").submit(function(e) {
 
@@ -12,7 +16,8 @@ $(function(){
            data: form.serialize(), // serializes the form's elements.
            success: function(data)
            {
-               console.log(data)
+               console.log(data);
+               refreshPage();
            }
          });
 	});

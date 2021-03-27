@@ -106,3 +106,28 @@ hr { background-color: rgb(175, 175, 175); height: 1px; border: 0; }
   .form-control::-webkit-input-placeholder {
   color: #6caf62;
 }
+
+a{
+  color: chartreuse;
+}
+
+ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+li {
+  padding-left: 1em;
+  text-indent: -1em;
+}
+
+li:before {
+  content: "> ";
+  color: chartreuse;
+  padding-right: 5px;
+}
+
+li {
+  word-wrap: break-word;
+}

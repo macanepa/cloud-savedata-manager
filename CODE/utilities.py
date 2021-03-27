@@ -5,6 +5,7 @@ import zipfile
 import logging
 import subprocess
 import webbrowser
+from datetime import datetime
 from pprint import pprint
 
 
@@ -27,6 +28,19 @@ def unzipdir(file_path: str, output_path: str = None):
             zipObj.extractall(output_path)
         else:
             zipObj.extractall()
+
+
+def encrypt_path(path: str):
+    user_profile = os.path.expanduser('~')
+    if path.startswith(user_profile):
+        return path.replace(user_profile, 'HOME')
+    return path
+
+
+def decrypt_path(path: str):
+    if path.startswith('HOME'):
+        return path.replace('HOME', os.path.expanduser('~'))
+    return path
 
 
 def create_config():
@@ -119,7 +133,7 @@ def create_game_data(data, menu=True):
     zipf = zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED)
     zipdir(real_path, zipf)
     zipf.close()
-
+    file_size = round(os.path.getsize(zip_filename)/1024)
     # Upload to google drive
     service = ga.get_service()
     if file_id:
@@ -134,6 +148,8 @@ def create_game_data(data, menu=True):
         'name': data['name'],
         'path': path,
         'id': file_id,
+        'kb_filesize': file_size,
+        'timestamp': datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     }
 
     config[data['name']] = data_config
@@ -168,19 +184,39 @@ def initialize():
 
 def add_game():
     mc_add_game = mc.Menu(title='Complete the following information', options=['name', 'path'], input_each=True)
-    mc_add_game.show()
-    data = mc_add_game.returned_value
+    while True:
+        mc_add_game.show()
+        data = mc_add_game.returned_value
+        if not data['name'].strip():
+            continue
+        if not os.path.exists(data['path']):
+            continue
+        break
+
     create_game_data(data)
+
+
+def check_local(path):
+    return os.path.exists(path)
 
 
 def update_game(game_id: str=None, menu: bool=True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
-    options = list(config.keys())
+    key_list = list(config.keys())
+    options = []
+
+    # Check that local data exists
+    for option in key_list:
+        path = decrypt_path(config[option]['path'])
+        if os.path.exists(path):
+            options.append(option)
     if len(options) == 0:
         logging.warning('No title SaveData found')
         return
+
     if menu:
-        mc_add_game = mc.Menu(title='Select a Title', options=options)
+        mc_add_game = mc.Menu(title=f'Select a Title ({mc.Color.YELLOW}only local data displayed{mc.Color.RESET})',
+                              options=options)
         mc_add_game.show()
         index = int(mc_add_game.returned_value)
         if index == 0:
@@ -234,18 +270,20 @@ def restore_game(game_id: str=None, menu: bool=True):
         os.remove(output_path)
 
 
-def delete_cloud_savedata():
+def delete_cloud_savedata(game_name: str=None, menu: bool=True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
     options = list(config.keys())
     if len(options) == 0:
         logging.warning('No title SaveData found')
         return
     mc_selected_game = mc.Menu(title='Select a Title', options=options)
-    mc_selected_game.show()
-    index = int(mc_selected_game.returned_value)
-    if index == 0:
-        return
-    data = config[options[index - 1]]
+    if menu:
+        mc_selected_game.show()
+        index = int(mc_selected_game.returned_value)
+        if index == 0:
+            return
+        game_name = options[index - 1]
+    data = config[game_name]
     pprint(data)
     directory = data['path']
     print(directory)
@@ -257,28 +295,31 @@ def delete_cloud_savedata():
     mc_confirmation = mc.Menu(title=f'Are you sure you want to delete the Cloud SaveData of {data["name"]}?\n'
                                     f'{mc.Color.RED}SaveData will be moved to trash on Google Drive{mc.Color.RESET}',
                               options=[f'{mc.Color.RED}Yes{mc.Color.RESET}', 'No'], back=False)
-    mc_confirmation.show()
-    if mc_confirmation.returned_value == '1':
+    if menu:
+        mc_confirmation.show()
+    if not menu or mc_confirmation.returned_value == '1':
         service = ga.get_service(version='v3')
         folder_id = service.files().get(fileId=data['id'], fields='*').execute()['parents'][0]
         ga.trash_file(service=service,
                       file_id=folder_id)
-        config.pop(options[index - 1], None)
+        config.pop(game_name, None)
         update_config_file(service=service,
                            config=config)
         logging.info(f'Game - {data["name"]} (id: {data["id"]} moved to trash)')
         mc.mcprint(text='Cloud SaveData deleted successfully', color=mc.Color.RED)
 
 
-def change_sync_account():
+def change_sync_account(menu: bool=True):
     mc_remove_sync_confirmation = mc.Menu(title='Are you sure you want to change sync account?\n'
                                                 'You will have to login again with a Google Account',
                                           options=['Yes', 'No'],
                                           back=False)
-    mc_remove_sync_confirmation.show()
-    if mc_remove_sync_confirmation.returned_value == '1':
+    if menu:
+        mc_remove_sync_confirmation.show()
+    if not menu or mc_remove_sync_confirmation.returned_value == '1':
         os.remove(TOKEN_PATH)
         os.remove(SETTINGS_PATH)
+    initialize()
     ga.get_service()
 
 
