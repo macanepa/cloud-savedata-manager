@@ -5,11 +5,11 @@ from os import path
 site_packages = next(p for p in sys.path if 'site-packages' in p)
 block_cipher = None
 
-a = Analysis(['code\\main.py'],
-             pathex=['C:\\Users\\matias\\PycharmProjects\\cloud-savedata-manager'],
+a = Analysis(['code\\web.py'],
+             pathex=['C:\\Users\\matias\\PycharmProjects\\cloud-savedata-manager\\CODE'],
              binaries=[],
-             datas=[(path.join(site_packages,"googleapiclient"),"googleapiclient")],
-             hiddenimports=["googleapiclient"],
+             datas=[('CODE/templates', 'templates'), ('CODE/static', 'static'), (path.join(site_packages,"googleapiclient"),"googleapiclient")],
+             hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -25,11 +25,11 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='main',
+          name='web',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=True)

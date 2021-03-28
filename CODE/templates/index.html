@@ -26,11 +26,15 @@
 <body>
     <div class="container-fluid px-5 pt-4">
         <div class="row">
-            <div class="col-5 p-2">
-                <h3 style="color: rgb(207, 207, 207);">Cloud SaveData Manager <span
-                        style="color: chartreuse;">alpha</span></h3>
+            <div class="col-6 p-2">
+                <h3 style="color: rgb(207, 207, 207);">Cloud SaveData Manager <span style="color: chartreuse;">
+                        alpha <span style="font-size: 50%;">v0.2.0</span>
+                        <a href="https://github.com/macanepa/cloud-savedata-manager/releases" style="font-size: 70%;" class="ml-1">
+                            <i href="#" class="fa fa-download mx-1" aria-hidden="true" data-toggle="tooltip" data-placement="top"
+                            title="Search for Update"></i>update</a>
+                    </span></h3>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <div id='id-alerta' class="alert alert-success show fade m-0" role='alert'>---</div>
             </div>
             <div class="col-3 p-2">
@@ -41,7 +45,7 @@
         <div class="row">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-7 p-2">
+                    <div class="col-6 p-2">
                         <div class="container p-3 my-3 bg-dark text-white rounded-lg shadow">
                             <div class="container-fluid">
                                 <div class="row">
@@ -50,7 +54,8 @@
                                 <div class="row pt-3">
                                     <ul class="list-group">
                                         {%for i in range(0, len)%}
-                                        <li id="li-{{i}}" value="{{games[i]}}" class="list-group-item bg-dark game-li">{{games[i]}}</li>
+                                        <li id="li-{{i}}" value="{{games[i]}}" class="list-group-item bg-dark game-li">
+                                            {{games[i]}}</li>
                                         {%endfor%}
                                     </ul>
                                 </div>
@@ -78,7 +83,7 @@
                                     </ul>
                                 </div>
                                 <div class="row">
-                                    <div class="btn-group">
+                                    <div id="button-group"class="btn-group">
                                         <button id="download-cloud-btn" disabled type="button"
                                             class="btn btn-success">Restore
                                             from Cloud</button>

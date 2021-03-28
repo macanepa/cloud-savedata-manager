@@ -131,3 +131,11 @@ li:before {
 li {
   word-wrap: break-word;
 }
+
+
+#button-group {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
