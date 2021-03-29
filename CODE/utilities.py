@@ -85,8 +85,9 @@ def update_config_file(service, config: dict, menu: bool=False):
     else:
         logging.warning('no settings.config found in cloud')
         mc_upload_settings = mc.Menu(title=f'Upload local settings.config to cloud?', options=['Yes', 'No'], back=False)
-        mc_upload_settings.show()
-        if mc_upload_settings.returned_value == '1' or not menu:
+        if menu:
+            mc_upload_settings.show()
+        if not menu or mc_upload_settings.returned_value == '1':
             logging.info('uploading local settings.config to cloud')
             ga.upload_file(service=service,
                            file_path=SETTINGS_PATH,

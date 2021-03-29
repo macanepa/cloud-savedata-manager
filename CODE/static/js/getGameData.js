@@ -23,15 +23,15 @@ $(function(){
 				document.getElementById('game-timestamp').textContent = "Timestamp: " + timestamp;
 				document.getElementById('gameId').textContent = "id: " + id;
 
-				document.getElementById('download-cloud-btn').disabled = false;
-				document.getElementById('delete-cloud-btn').disabled = false;
+				document.getElementById('ddownload-cloud-btn').disabled = false;
+				document.getElementById('ddelete-cloud-btn').disabled = false;
 				if (response['is_local']){
 					console.log('is local: True');
-					document.getElementById('upload-cloud-btn').disabled = false;
+					document.getElementById('uupload-cloud-btn').disabled = false;
 				}
 				else{
 					console.log('disable the upload button')
-					document.getElementById('upload-cloud-btn').disabled = true;
+					document.getElementById('uupload-cloud-btn').disabled = true;
 				}
 
 			},
