@@ -2,7 +2,7 @@ import mcutils as mc
 import utilities
 import google_api as ga
 
-mc.ColorSettings.is_dev = True
+mc.ColorSettings.is_dev = False
 mc.activate_mc_logger('info')
 utilities.initialize()
 
