@@ -1,6 +1,6 @@
 import mcutils as mc
 from flask import Flask
-from flaskwebgui import FlaskUI   # get the FlaskUI class
+from flaskwebgui import FlaskUI
 from flask import render_template, request, redirect
 import utilities
 import google_api as ga
@@ -8,6 +8,7 @@ from pprint import pprint
 import sys
 import os
 from packaging import version
+
 
 
 if getattr(sys, 'frozen', False):
@@ -56,6 +57,7 @@ def documentation():
     return render_template('documentation.html')
 
 
+
 @app.route('/games', methods=['GET'])
 def games():
     if request.method == 'GET':
@@ -75,7 +77,6 @@ def games():
 
 @app.route('/upload_cloud', methods=['GET'])
 def upload_cloud():
-    print('wiwi')
     if request.method == 'GET':
         config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
         print(request.args)
@@ -108,9 +109,7 @@ def download_cloud():
 
 @app.route('/addGame', methods=['POST'])
 def add_game():
-    print("WIWIEII")
     if request.method == 'POST':
-        print("walala")
         pprint(request.form)
         data = request.form
         game_name = data.get('game')
@@ -124,7 +123,6 @@ def add_game():
 @app.route('/logout', methods=['GET'])
 def logout():
     if request.method == 'GET':
-
         utilities.change_sync_account(menu=False)
         return redirect('/')
     return {'nice': False}
