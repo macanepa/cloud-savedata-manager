@@ -7,6 +7,8 @@ import google_api as ga
 from pprint import pprint
 import sys
 import os
+from packaging import version
+
 
 if getattr(sys, 'frozen', False):
     template_folder = os.path.join(sys._MEIPASS, 'templates')
@@ -26,10 +28,17 @@ utilities.initialize()
 def index():
     config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
     game_list = list(config.keys())
+    latest_version = utilities.get_latest_version()
+    new_version = None
+    if version.parse(latest_version) > version.parse(utilities.APP_VERSION):
+        new_version = latest_version
     return render_template('index.html',
                            email=ga.get_user_info(),
                            games=game_list,
-                           len=len(game_list))
+                           len=len(game_list),
+                           APP_VERSION=utilities.APP_VERSION,
+                           new_version=new_version)
+
 
 @app.route('/games', methods=['GET'])
 def games():

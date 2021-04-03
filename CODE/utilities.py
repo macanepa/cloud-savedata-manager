@@ -7,11 +7,13 @@ import subprocess
 import webbrowser
 from datetime import datetime
 from pprint import pprint
+import requests
 
 
 SETTINGS_PATH = 'credentials/settings.config'
 TOKEN_PATH = 'credentials/token.json'
 CREDENTIALS_PATH = 'credentials/credentials.json'
+APP_VERSION = 'v0.3.0'
 
 
 def zipdir(path, ziph):
@@ -72,7 +74,7 @@ def upload_settings():
                    parent_id=ga.list_folders(service))
 
 
-def update_config_file(service, config: dict, menu: bool=False):
+def update_config_file(service, config: dict, menu: bool = False):
     mc.generate_json(SETTINGS_PATH, config)
 
     settings_file_id = ga.return_id(service=service,
@@ -201,7 +203,7 @@ def check_local(path):
     return os.path.exists(path)
 
 
-def update_game(game_id: str=None, menu: bool=True):
+def update_game(game_id: str = None, menu: bool = True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
     key_list = list(config.keys())
     options = []
@@ -229,7 +231,7 @@ def update_game(game_id: str=None, menu: bool=True):
     create_game_data(data, menu=menu)
 
 
-def restore_game(game_id: str=None, menu: bool=True):
+def restore_game(game_id: str = None, menu: bool = True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
     if menu:
         options = list(config.keys())
@@ -271,7 +273,7 @@ def restore_game(game_id: str=None, menu: bool=True):
         os.remove(output_path)
 
 
-def delete_cloud_savedata(game_name: str=None, menu: bool=True):
+def delete_cloud_savedata(game_name: str = None, menu: bool = True):
     config = mc.get_dict_from_json(SETTINGS_PATH)
     options = list(config.keys())
     if len(options) == 0:
@@ -310,7 +312,7 @@ def delete_cloud_savedata(game_name: str=None, menu: bool=True):
         mc.mcprint(text='Cloud SaveData deleted successfully', color=mc.Color.RED)
 
 
-def change_sync_account(menu: bool=True):
+def change_sync_account(menu: bool = True):
     mc_remove_sync_confirmation = mc.Menu(title='Are you sure you want to change sync account?\n'
                                                 'You will have to login again with a Google Account',
                                           options=['Yes', 'No'],
@@ -329,12 +331,18 @@ def display_app_info():
         authors=['Matías Cánepa'],
         github_repo='https://github.com/macanepa/cloud-savedata-manager'
     )
-
     about.print_credits()
 
 
 def check_update():
     webbrowser.open('https://github.com/macanepa/cloud-savedata-manager/releases')
+
+
+def get_latest_version():
+    response = requests.get('https://api.github.com/repos/macanepa/cloud-savedata-manager/releases')
+    json_data = response.json()
+    latest_version = json_data[0]['tag_name']
+    return latest_version
 
 
 if __name__ == '__main__':
