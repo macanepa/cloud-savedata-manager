@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Cloud SaveData Manager</title>
+    <meta name="description" content="Cloud SaveData Manager">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="../static/js/documentation.js"></script>
+</head>
+
+<body>
+    <div class="container w-50">
+        <div class="container p-3 my-3 bg-dark text-white rounded-lg shadow">
+            <h2 class="row justify-content-center align-items-center">Cloud Savedata Manager Documentation</h2>
+        </div>
+        <div class="container p-3 my-3 bg-dark text-white rounded-lg shadow">
+            <h3 class="p-3">About</h3>
+            <p class="px-3">Cloud Savedata Manager is a tool that allows the user to backup & restore their
+                game savedata making use of their own Google Drive account. Even though this tool is designed for the
+                games that don't allow native cloud saves on their respective launchers, it is possible to backup those savedata aswell.</p>
+            <hr>
+
+            <h3 class="p-3">Initial Setup</h3>
+            <br>
+            <h5 class="px-3">Google Drive Credential</h5>
+            <p class="px-3">The first step is to obtain a Google Drive API Credential</p>
+            <ul>
+                <li>Head to <a href="https://developers.google.com/drive/api/v3/quickstart/python">this link</a> and
+                    click on Enable the Drive API</li>
+                <li>Enter any name for the project</li>
+                <li>Select Yes and Next</li>
+                <li>Select Desktop app and Create</li>
+                <li>Click Download Client Configuration</li>
+                <li>Place the credentials.json inside the credentials folder (make sure that the json file has that
+                    exact name)</li>
+                <li>On the console, press enter to continue</li>
+            </ul>
+            <br>
+
+            <h5 class="px-3">Login on Google Drive</h5>
+            <p class="px-3">The second step is to obtain a Google Drive API Credential. A new web browser will open
+                asking you to login to your Google Account</p>
+            <ul>
+                <li>Login on Google Drive</li>
+                <li>Click on Advanced Configuration and then on Quickstart</li>
+                <li>Allow the required permissions</li>
+            </ul>
+            <p class="px-3">Now you should be able to make use of the Cloud Savedata Manager with your own Google Drive
+                account. Click the button bellow to start using the app.</p>
+            <div class="row justify-content-center align-items-center">
+                <button id="redirect-index" class="btn btn-primary">Go to Cloud Savedata Manager</button>
+            </div>
+            <hr>
+
+
+
+        </div>
+    </div>
+</body>
+
+</html>

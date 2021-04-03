@@ -21,11 +21,22 @@ ui = FlaskUI(app, width=1100, height=550)
 
 mc.ColorSettings.is_dev = False
 mc.activate_mc_logger('info')
-utilities.initialize()
+#utilities.initialize()
 
+
+@app.route("/check_credentials", methods=['GET'])
+def check_credentials():
+    if not utilities.check_credentials():
+        utilities.create_credentials(menu=False)
+        utilities.initialize()
+        return {'status': 'ok'}
+    return {'status': 'error'}
 
 @app.route("/")
 def index():
+    if not utilities.check_credentials():
+        return render_template("documentation.html")
+    utilities.initialize()
     config = mc.get_dict_from_json(utilities.SETTINGS_PATH)
     game_list = list(config.keys())
     latest_version = utilities.get_latest_version()
@@ -38,6 +49,11 @@ def index():
                            len=len(game_list),
                            APP_VERSION=utilities.APP_VERSION,
                            new_version=new_version)
+
+
+@app.route("/documentation")
+def documentation():
+    return render_template('documentation.html')
 
 
 @app.route('/games', methods=['GET'])

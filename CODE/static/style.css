@@ -139,3 +139,5 @@ li {
   flex-direction: row;
   justify-content: center;
 }
+
+.cursor-ul>li { cursor: pointer; }

@@ -8,6 +8,7 @@ import webbrowser
 from datetime import datetime
 from pprint import pprint
 import requests
+import time
 
 
 SETTINGS_PATH = 'credentials/settings.config'
@@ -65,6 +66,7 @@ def download_config():
     else:
         logging.warning('No settings.config file found')
         create_config()
+    return service
 
 
 def upload_settings():
@@ -159,18 +161,15 @@ def create_game_data(data, menu=True):
     update_config_file(service, config, menu=menu)
 
 
-def check_credentials():
+def create_credentials(menu: bool = True):
+    google_api_link = 'https://developers.google.com/drive/api/v3/quickstart/python'
     credentials_directory = os.path.join(os.getcwd(), "credentials")
-    link = 'https://developers.google.com/drive/api/v3/quickstart/python'
-    if not os.path.exists('credentials'):
-        os.mkdir('credentials')
-    if not os.path.exists(CREDENTIALS_PATH):
-        webbrowser.open(link, new=2)
-        subprocess.call(f"explorer {credentials_directory}", shell=True)
-    while not os.path.exists(CREDENTIALS_PATH):
+    webbrowser.open(google_api_link, new=2)
+    subprocess.call(f"explorer {credentials_directory}", shell=True)
+    while menu and not os.path.exists(CREDENTIALS_PATH):
         logging.warning('no credentials.json found')
         mc.mcprint(f"""
-        1. Head to {link} and click on "Enable the Drive API"
+        1. Head to {google_api_link} and click on "Enable the Drive API"
         2. Enter a name for the project, e.g "Cloud SaveData Manager"
         3. Select "Yes" and "Next"
         4. Select "Desktop app" and Create
@@ -178,11 +177,26 @@ def check_credentials():
         6. Place the "credentials.json" inside the "credentials" folder\n""")
         input('Enter to continue...')
         mc.clear(10)
+    while not menu and not os.path.exists(CREDENTIALS_PATH):
+        logging.info('Searching for credentials.json')
+        time.sleep(5)
 
 
-def initialize():
-    check_credentials()
-    download_config()
+
+def check_credentials():
+    if not os.path.exists('credentials'):
+        os.mkdir('credentials')
+    if not os.path.exists(CREDENTIALS_PATH):
+        return False
+    return True
+
+
+def initialize(menu: bool=True):
+    if not check_credentials():
+        create_credentials()
+    while not download_config():
+        continue
+
 
 
 def add_game():
