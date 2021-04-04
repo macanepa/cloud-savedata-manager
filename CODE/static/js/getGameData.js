@@ -16,12 +16,14 @@ $(function(){
 				size = response['kb_filesize'];
 				timestamp = response['timestamp'];
 				gameName = response['game_name'];
+				description = response['description'];
 
 				document.getElementById('game-title').textContent = "Title: " + gameName;
 				document.getElementById('path').textContent = "Location: " + path;
 				document.getElementById('game-size').textContent = "Size: " + size + " Kb";
 				document.getElementById('game-timestamp').textContent = "Timestamp: " + timestamp;
 				document.getElementById('gameId').textContent = "id: " + id;
+				document.getElementById('description').textContent = "Description: " + description;
 
 				document.getElementById('ddownload-cloud-btn').disabled = false;
 				document.getElementById('ddelete-cloud-btn').disabled = false;
@@ -34,6 +36,30 @@ $(function(){
 					document.getElementById('uupload-cloud-btn').disabled = true;
 				}
 
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+
+	$('#path').click(function(){
+		var path = $(this).text();
+		console.log(path);
+		path = path.replace('Location:', '');
+		console.log(path)
+		if(path == ''){
+			return
+		}
+		path = path;
+		console.log('wiweño');
+		console.log(path);
+		$.ajax({
+			url: '/open_location',
+			data: {'path': path},
+			type: 'GET',
+			success: function(response){
+				console.log(response);
 			},
 			error: function(error){
 				console.log(error);

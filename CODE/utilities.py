@@ -14,7 +14,7 @@ import time
 SETTINGS_PATH = 'credentials/settings.config'
 TOKEN_PATH = 'credentials/token.json'
 CREDENTIALS_PATH = 'credentials/credentials.json'
-APP_VERSION = 'v0.3.0'
+APP_VERSION = 'v0.2.0'
 
 
 def zipdir(path, ziph):
@@ -154,7 +154,8 @@ def create_game_data(data, menu=True):
         'path': path,
         'id': file_id,
         'kb_filesize': file_size,
-        'timestamp': datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        'timestamp': datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        'description': data['description']
     }
 
     config[data['name']] = data_config
@@ -200,7 +201,7 @@ def initialize(menu: bool=True):
 
 
 def add_game():
-    mc_add_game = mc.Menu(title='Complete the following information', options=['name', 'path'], input_each=True)
+    mc_add_game = mc.Menu(title='Complete the following information', options=['name', 'path', 'description'], input_each=True)
     while True:
         mc_add_game.show()
         data = mc_add_game.returned_value

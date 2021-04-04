@@ -55,7 +55,7 @@
                                     <h5>Games available on Cloud</h5>
                                 </div>
                                 <div class="row pt-3">
-                                    <ul class="list-group">
+                                    <ul class="list-group cursor-ul">
                                         {%for i in range(0, len)%}
                                         <li id="li-{{i}}" value="{{games[i]}}" class="list-group-item bg-dark game-li">
                                             {{games[i]}}</li>
@@ -83,6 +83,7 @@
                                         <li id="game-size">Size:</li>
                                         <li id="game-timestamp">Timestamp:</li>
                                         <li id="gameId">id:</li>
+                                        <li id="description">Description:</li>
                                     </ul>
                                 </div>
                                 <div class="row">
@@ -127,7 +128,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Add New Savedata</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-success" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Modal body -->
@@ -135,16 +136,24 @@
                     <form id="new-game-form" method="post">
                         <div class="form-row">
                             <div class="col">
-                                <input id="game-name-field" type="text" class="form-control bg-dark text-white"
-                                    placeholder="Videogame name" name="game">
+                                <input id="game-name-field" type="text" class="form-control"
+                                    placeholder="Videogame name" name="game" required>
                             </div>
                         </div>
                         <div class="form-row mt-2">
                             <div class='col'>
-                                <input id="'path-field" type="text" class="form-control bg-dark text-white"
-                                    placeholder="Savedata Directory Path" name="path">
+                                <input id="'path-field" type="text" class="form-control"
+                                    placeholder="Savedata Directory Path" name="path" required>
                             </div>
                         </div>
+
+                        <div class="form-row mt-2">
+                            <div class='col'>
+                                <textarea id="'path-field" type="text" class="form-control"
+                                    placeholder="Description (Optional) " name="description" rows="5"></textarea>
+                            </div>
+                        </div>
+                        
                         <div class="form-row mt-2">
                             <div class='col'>
                                 <input id="add-game-btn" type="submit" class="btn btn-success"></input>

@@ -8,6 +8,7 @@ from pprint import pprint
 import sys
 import os
 from packaging import version
+import subprocess
 
 
 
@@ -114,10 +115,14 @@ def add_game():
         data = request.form
         game_name = data.get('game')
         path = data.get('path')
-        data = {'name': game_name,
-                'path': path}
-        utilities.create_game_data(data=data, menu=False)
-    return {'nice': True}
+        if os.path.exists(path):
+            description = data.get('description')
+            data = {'name': game_name,
+                    'path': path,
+                    'description': description}
+            utilities.create_game_data(data=data, menu=False)
+            return {'nice': True}
+        return {'status': 'error'}
 
 
 @app.route('/logout', methods=['GET'])
@@ -135,6 +140,17 @@ def delete_cloud():
                                         menu=False)
         return redirect('/')
     return {'nice': False}
+
+
+@app.route("/open_location", methods=['GET'])
+def open_location():
+    if request.method == 'GET':
+        print(request.args)
+        path = request.args.get('path').strip()
+        if os.path.exists(path):
+            subprocess.call(f"explorer {path}", shell=True)
+            return {'status': 'ok'}
+    return {'status': 'error'}
 
 
 ui.run()

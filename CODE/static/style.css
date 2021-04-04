@@ -104,7 +104,7 @@ hr { background-color: rgb(175, 175, 175); height: 1px; border: 0; }
   }
 
   .form-control::-webkit-input-placeholder {
-  color: #6caf62;
+  color: #949494;
 }
 
 a{
@@ -140,4 +140,20 @@ li {
   justify-content: center;
 }
 
-.cursor-ul>li { cursor: pointer; }
+.cursor-ul li { cursor: pointer; }
+
+#path {
+  color: chartreuse;
+  cursor: pointer; 
+}
+
+#path:hover {
+  color: rgb(153, 228, 79);
+  cursor: pointer; 
+  text-decoration: underline;
+}
+
+
+.modal-title{
+  color: chartreuse;
+}
